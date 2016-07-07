@@ -1,7 +1,7 @@
 import MySQLdb
 for i in xrange(1, 14):
 	mysql_opts = {
-	 'host': "pma01.pph-server.de",
+	 'host': "- - -",
 	 'user': "pfr",
 	 'pass': ";)",
 	 'db':   "PFR"
