@@ -5,7 +5,7 @@ import re
 import MySQLdb
 
 mysql_opts = {
-	'host': "pma01.pph-server.de",
+	'host': "- - -",
 	'user': "pfr",
 	'pass': ";)",
 	'db':   "PFR"
