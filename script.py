@@ -17,17 +17,14 @@ def check_exist(reactor_check,date_check,time_check):
 	else:
 	    return 0
 
-
 mysql_opts = {
 	'host': "",
 	'user': "",
 	'pass': "",
 	'db':   ""
 }
-
 ifile  = open('Phyto1_07122013_10042014.csv', "rb")
 reader = csv.reader(ifile)
-
 rownum = 0
 for row in reader:
     if rownum == 0:
@@ -99,8 +96,6 @@ for row in reader:
 			except:
 		   		mysql.rollback()
 			mysql.close()		
-
             colnum += 1      
     rownum += 1
-
 ifile.close()
