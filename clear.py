@@ -1,10 +1,10 @@
 import MySQLdb
 for i in xrange(1, 14):
 	mysql_opts = {
-	 'host': "- - -",
-	 'user': "pfr",
-	 'pass': ";)",
-	 'db':   "PFR"
+	 'host': "",
+	 'user': "",
+	 'pass': "",
+	 'db':   ""
 	 }	
 	mysql = MySQLdb.connect(mysql_opts['host'], mysql_opts['user'], mysql_opts['pass'], mysql_opts['db'])
 	mysql.apilevel = "2.0"
