@@ -1,16 +1,36 @@
+#!/usr/bin/python
 # -*- encoding: iso-8859-15 -*-
-import sys
-import csv
-import re
-import MySQLdb
 
-def check_exist(reactor_check,date_check,time_check):
+import sys, csv, getopt, re
+import MySQLdb
+from datetime import datetime
+
+def main(argv):
+   inputfile = ''
+   try:
+      opts, args = getopt.getopt(argv,"hi:o:",["ifile="])
+   except getopt.GetoptError:
+      print 'test.py -i <inputfile>'
+      sys.exit(2)
+   for opt, arg in opts:
+      if opt == '-h':
+         print 'test.py -i <inputfile> '
+         sys.exit()
+      elif opt in ("-i", "--ifile"):
+         inputfile = arg
+   print 'Input file is "', inputfile
+
+if __name__ == "__main__":
+   main(sys.argv[1:])
+
+def check_exist(reactor_check, date_check):
 	mysql = MySQLdb.connect(mysql_opts['host'], mysql_opts['user'], mysql_opts['pass'], mysql_opts['db'])
 	mysql.apilevel = "2.0"
 	mysql.threadsafety = 2
 	mysql.paramstyle = "format"
 	cursor = mysql.cursor()
-	cursor.execute("SELECT * FROM reactor_%d WHERE Date='%s' AND Time='%s:00'" % (int(reactor_check), date_check, time_check))
+	cursor.execute("SELECT * FROM reactor_%d WHERE Date='%s'" % (int(reactor_check), date_check))
+	#print("SELECT * FROM reactor_%d WHERE Date='%s'" % (int(reactor_check), date_check))
 	row_count = cursor.rowcount
 	if row_count == 0:
 	    return 1
@@ -18,12 +38,13 @@ def check_exist(reactor_check,date_check,time_check):
 	    return 0
 
 mysql_opts = {
-	'host': "",
-	'user': "",
-	'pass': "",
-	'db':   ""
+	'host': "UBT27",
+	'user': "PFR",
+	'pass': "5pfr301",
+	'db':   "pfr_new"
 }
-ifile  = open('Phyto1_07122013_10042014.csv', "rb")
+
+ifile  = open(sys.argv[2], "rb")
 reader = csv.reader(ifile)
 rownum = 0
 for row in reader:
@@ -55,9 +76,10 @@ for row in reader:
 				mysql.paramstyle = "format"
 				cursor = mysql.cursor()
 				x = mysql.cursor()
-				if check_exist(int(reactor_num[0]), date, time)==1:		
-					try:
-			   			x.execute("""INSERT INTO reactor_%d (Date, Time, PH, Redox, Oxy, Temp, Fill) VALUES ('%s', '%s:00', '%s', '%s', '%s', '%s', '%s')""" % (int(reactor_num[0]), date, time, ph, redox, oxy, temp, fill))
+				dat_string = date + " " + time
+				if check_exist(int(reactor_num[0]), datetime.strptime(dat_string, '%m/%d/%Y %H:%M'))==1:		
+					try:	
+			   			x.execute("""INSERT INTO reactor_%d (Date, PH, Redox, Oxy, Temp, Fill) VALUES ('%s', '%s', '%s', '%s', '%s', '%s')""" % (int(reactor_num[0]), datetime.strptime(dat_string, '%m/%d/%Y %H:%M'), ph, redox, oxy, temp, fill))
 			   			mysql.commit()
 					except:
 			   			mysql.rollback()
@@ -71,9 +93,10 @@ for row in reader:
 			mysql.paramstyle = "format"
 			cursor = mysql.cursor()
 			x = mysql.cursor()
-			if check_exist(int(reactor_num[0]), date, time)==1:
+			dat_string = date + " " + time
+			if check_exist(int(reactor_num[0]), datetime.strptime(dat_string, '%m/%d/%Y %H:%M'))==1:
 				try:
-			   		x.execute("""INSERT INTO reactor_%d (Date, Time, PH, Redox, Oxy, Temp, Fill, Diff) VALUES ('%s', '%s:00', '%s', '%s', '%s', '%s', '%s', '%s')""" % (int(reactor_num[0]), date, time, ph, redox, oxy, temp, fill, diff))
+			   		x.execute("""INSERT INTO reactor_%d (Date, PH, Redox, Oxy, Temp, Fill, Diff) VALUES ('%s', '%s', '%s', '%s', '%s', '%s', '%s')""" % (int(reactor_num[0]), datetime.strptime(dat_string, '%m/%d/%Y %H:%M'), ph, redox, oxy, temp, fill, diff))
 			   		mysql.commit()
 				except:
 			   		mysql.rollback()
@@ -89,9 +112,10 @@ for row in reader:
 		mysql.paramstyle = "format"
 		cursor = mysql.cursor()
 		x = mysql.cursor()
-		if check_exist(int(reactor_num[0]), date, time)==1:	
+		dat_string = date + " " + time
+		if check_exist(int(reactor_num[0]), datetime.strptime(dat_string, '%m/%d/%Y %H:%M'))==1:	
 			try:
-		   		x.execute("""INSERT INTO reactor_%d (Date, Time, PH, Redox, Oxy, Temp, Fill, Mass1, Mass2, Diff) VALUES ('%s', '%s:00', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s')""" % (int(reactor_num[0]), date, time, ph, redox, oxy, temp, fill, mass1, mass2, diff))
+		   		x.execute("""INSERT INTO reactor_%d (Date, PH, Redox, Oxy, Temp, Fill, Mass1, Mass2, Diff) VALUES ('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s')""" % (int(reactor_num[0]), datetime.strptime(dat_string, '%m/%d/%Y %H:%M'), ph, redox, oxy, temp, fill, mass1, mass2, diff))
 		   		mysql.commit()
 			except:
 		   		mysql.rollback()
@@ -99,3 +123,4 @@ for row in reader:
             colnum += 1      
     rownum += 1
 ifile.close()
+
