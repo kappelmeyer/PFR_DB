@@ -38,9 +38,9 @@ def check_exist(reactor_check, date_check):
 	    return 0
 
 mysql_opts = {
-	'host': "UBT27",
+	'host': "",
 	'user': "PFR",
-	'pass': "5pfr301",
+	'pass': "",
 	'db':   "pfr_new"
 }
 
