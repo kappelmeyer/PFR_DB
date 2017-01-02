@@ -38,10 +38,10 @@ def check_exist(reactor_check, date_check):
 	    return 0
 
 mysql_opts = {
-	'host': "",
-	'user': "PFR",
-	'pass': "",
-	'db':   "pfr_new"
+	'host': "here host name",
+	'user': "mySQL User name",
+	'pass': "mySQL password",
+	'db':   "pfr_new" 
 }
 
 ifile  = open(sys.argv[2], "rb")
